@@ -62,4 +62,22 @@ object Analyzer {
   def countByType(entities: List[NamedEntity]): Map[String, Int] = {
     ???
   }
+
+  def starPoint(entities: List[NamedEntity]): Map[String, Map[String, Int]] = {
+    entities.groupBy{e=>
+      if(e.entityType=="ProgrammingLanguage" || e.entityType=="University"){
+        val clase = e.entityType
+        clase match {
+          case "ProgrammingLanguage" => "Technology"
+          case "University" => "Organization"
+        }
+      } 
+      else{
+        e.entityType
+      }
+      }.map{case (clase, list) => 
+        (clase, list.groupBy(e=>e.entityType).map{case(word,list)=> 
+      (word, list.length)})}
+  }
+
 }
