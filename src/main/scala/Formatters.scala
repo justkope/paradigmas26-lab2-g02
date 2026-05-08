@@ -60,4 +60,8 @@ object Formatters {
   def formatEntityStats(counts: Map[String, Int]): String = {
     ???
   }
+
+  def formatStarPoint(counts: Map[String, Map[String, Int]]): String ={
+    ???
+  }
 }
