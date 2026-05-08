@@ -31,7 +31,11 @@ object Main {
     allPosts.foreach { case (url, titles) =>
       titles.foreach { titulo =>
         val entidades = Analyzer.detectEntities(titulo, dictionary)
+        val count = Analyzer.countByType(entidades)
+        val starpoint = Analyzer.starPoint(entidades)
         println(Formatters.formatNERResult(titulo, entidades))
+        println(Formatters.formatEntityStats(count))
+        println(Formatters.formatStarPoint(starpoint))
       }
     }
     // ------------------------------------------------------------------
