@@ -60,7 +60,9 @@ object Analyzer {
    *                 )
    */
   def countByType(entities: List[NamedEntity]): Map[String, Int] = {
-    ???
+    entities.groupBy(e => e.entityType).map{
+      case (entityType, list) => (entityType, list.length)
+    }
   }
 
   def starPoint(entities: List[NamedEntity]): Map[String, Map[String, Int]] = {
