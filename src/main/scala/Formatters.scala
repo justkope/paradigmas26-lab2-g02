@@ -58,7 +58,19 @@ object Formatters {
    *     University: 2
    */
   def formatEntityStats(counts: Map[String, Int]): String = {
-    ???
+    val header = " === Estadisticas de entidades === "
+
+    if (counts.isEmpty) {
+      s"$header\n(sin entidades detectadads)"
+    } else {
+      val body = counts.toList.sortBy{
+        case (_ , count) => -count
+      }.map{
+        case (entityType, count) => s"$entityType: $count"
+      }.mkString("\n")
+
+      s"$header \n $body"
+    }
   }
 
   def formatStarPoint(counts: Map[String, Map[String, Int]]): String ={

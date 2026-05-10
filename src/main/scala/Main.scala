@@ -32,10 +32,10 @@ object Main {
       titles.foreach { titulo =>
         val entidades = Analyzer.detectEntities(titulo, dictionary)
         val count = Analyzer.countByType(entidades)
-        val starpoint = Analyzer.starPoint(entidades)
+        //val starpoint = Analyzer.starPoint(entidades)
         println(Formatters.formatNERResult(titulo, entidades))
         println(Formatters.formatEntityStats(count))
-        println(Formatters.formatStarPoint(starpoint))
+        //println(Formatters.formatStarPoint(starpoint)) lo comento pq me rompe todo
       }
     }
     // ------------------------------------------------------------------
