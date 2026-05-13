@@ -35,7 +35,24 @@ object Analyzer {
    *                  )
    */
   def detectEntities(text: String, dictionary: List[NamedEntity]): List[NamedEntity] = {
-    dictionary.filter(entidad => text.contains(entidad.text))
+    dictionary.filter{entity=>
+      if (entity.text=="C++")
+        {
+          val identify = s"\\b(C\\+\\+)\\b".r 
+          identify.findFirstIn(text) match {
+          case Some(value) => true
+          case None => false   
+          }
+      }
+      else
+        {
+          val identify = s"\\b(${entity.text})\\b".r
+          identify.findFirstIn(text) match {
+          case Some(value) => true
+          case None => false
+          }
+        }
+    }
   }
 
   /**
