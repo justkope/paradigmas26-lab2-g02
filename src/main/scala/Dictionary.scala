@@ -40,17 +40,23 @@ object Dictionary {
    *
    */
   def loadFromFile(filePath: String, entityType: String): List[NamedEntity] = {
-    Source.fromFile(filePath).getLines()
-      .filter(line => !line.startsWith("#"))
-      .filter(line => line.trim.nonEmpty)
-      .map(line => entityType match {
-        case "persons" => new Person(line)
-        case "organizations" => new Organization(line)
-        case "universities" => new University(line)
-        case "places" => new Place(line)
-        case "languages" => new ProgrammingLanguage(line)
+    val source = Source.fromFile(filePath)
+
+    try {
+      source.getLines()
+        .filter(line => !line.startsWith("#"))
+        .filter(line => line.trim.nonEmpty)
+        .map(line => entityType match {
+          case "persons" => new Person(line)
+          case "organizations" => new Organization(line)
+          case "universities" => new University(line)
+          case "places" => new Place(line)
+          case "languages" => new ProgrammingLanguage(line)
         })
-      .toList
+        .toList
+    } finally {
+      source.close()
+    }
   }
 
   /**

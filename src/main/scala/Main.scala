@@ -8,7 +8,9 @@ object Main {
     // ------------------------------------------------------------------
     // Paso 1: Cargar diccionarios
     // ------------------------------------------------------------------
-    // TODO (Ejercicio 2)
+
+
+
     val dictionary: List[NamedEntity] = Dictionary.loadAll()
 
     println(s"Diccionario cargado: ${dictionary.size} entidades.\n")
@@ -32,19 +34,26 @@ object Main {
       titles.foreach { titulo =>
         val entidades = Analyzer.detectEntities(titulo, dictionary)
         val count = Analyzer.countByType(entidades)
-        //val starpoint = Analyzer.starPoint(entidades)
+        val starpoint = Analyzer.starPoint(entidades)
         println(Formatters.formatNERResult(titulo, entidades))
         println(Formatters.formatEntityStats(count))
-        //println(Formatters.formatStarPoint(starpoint)) lo comento pq me rompe todo
+        println(Formatters.formatStarPoint(starpoint))
       }
     }
-    // ------------------------------------------------------------------
-    // Paso 4: Estadísticas globales
-    // ------------------------------------------------------------------
-    // TODO (Ejercicios 5 y 6):
-    //   1. Recolectar TODAS las entidades detectadas en todos los posts
-    //   2. Contar por tipo
-    //   3. Mostrar el resumen
+
+    val allEntities: List[NamedEntity] =
+    allPosts.flatMap { case (_, titles) =>
+      titles.flatMap { titulo =>
+        Analyzer.detectEntities(titulo, dictionary)
+      }
+    }
+
+    val globalCounts = Analyzer.countByType(allEntities)
+    val globalStarPoint = Analyzer.starPoint(allEntities)
+
+    println(Formatters.formatEntityStats(globalCounts))
+    println(Formatters.formatStarPoint(globalStarPoint))
+
 
   }
 }

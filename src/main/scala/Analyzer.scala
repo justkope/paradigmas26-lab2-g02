@@ -1,7 +1,7 @@
 // =====================================================================
 // Ejercicios 3 y 5: Detección y conteo de entidades
 // =====================================================================
-
+import scala.util.matching.Regex
 /**
  * Responsable de detectar entidades nombradas en texto libre y
  * producir estadísticas sobre ellas.
@@ -35,23 +35,9 @@ object Analyzer {
    *                  )
    */
   def detectEntities(text: String, dictionary: List[NamedEntity]): List[NamedEntity] = {
-    dictionary.filter{entity=>
-      if (entity.text=="C++")
-        {
-          val identify = s"\\b(C\\+\\+)\\b".r 
-          identify.findFirstIn(text) match {
-          case Some(value) => true
-          case None => false   
-          }
-      }
-      else
-        {
-          val identify = s"\\b(${entity.text})\\b".r
-          identify.findFirstIn(text) match {
-          case Some(value) => true
-          case None => false
-          }
-        }
+      dictionary.filter { entity =>
+        val pattern = s"(?<!\\w)${Regex.quote(entity.text)}(?!\\w)".r
+        pattern.findFirstIn(text).isDefined
     }
   }
 
@@ -83,20 +69,22 @@ object Analyzer {
   }
 
   def starPoint(entities: List[NamedEntity]): Map[String, Map[String, Int]] = {
-    entities.groupBy{e=>
-      if(e.entityType=="ProgrammingLanguage" || e.entityType=="University"){
-        val clase = e.entityType
-        clase match {
-          case "ProgrammingLanguage" => "Technology"
-          case "University" => "Organization"
-        }
-      } 
-      else{
-        e.entityType
+    entities
+      .groupBy {
+        case _: ProgrammingLanguage => "Technology"
+        case _: University => "Organization"
+        case e => e.entityType
       }
-      }.map{case (clase, list) => 
-        (clase, list.groupBy(e=>e.entityType).map{case(word,list)=> 
-      (word, list.length)})}
+      .map {
+        case (parentType, list) =>
+          val childrenCounts =
+            list.groupBy(_.entityType).map {
+              case (entityType, entitiesOfType) =>
+                entityType -> entitiesOfType.length
+            }
+
+          parentType -> childrenCounts
+      }
   }
 
 }

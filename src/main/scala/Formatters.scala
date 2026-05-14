@@ -73,7 +73,28 @@ object Formatters {
     }
   }
 
-  def formatStarPoint(counts: Map[String, Map[String, Int]]): String ={
-    ???
+  def formatStarPoint(counts: Map[String, Map[String, Int]]): String = {
+    val header = "=== Estadisticas jerarquicas ==="
+
+    if (counts.isEmpty) {
+      s"$header\n(sin entidades detectadas)"
+    } else {
+      val body = counts.toList.map {
+        case (parentType, children) =>
+          val total = children.values.sum
+
+          val childrenText = children.toList.map {
+            case (childType, count) if childType == parentType =>
+              s"  ($parentType directa): $count"
+
+            case (childType, count) =>
+              s"  $childType: $count"
+          }.mkString("\n")
+
+          s"$parentType: $total\n$childrenText"
+      }.mkString("\n\n")
+
+      s"$header\n$body"
+    }
   }
 }
